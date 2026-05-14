@@ -2,18 +2,11 @@
 
 import React, { useState, useRef } from "react";
 import styles from "./GraphCanvas.module.css";
-
-interface ASTNode {
-  id: string;
-  title: string;
-  type: "service" | "controller" | "model";
-  x: number;
-  y: number;
-  complexity: number;
-  inEdges: string[];
-}
+import { useWorkspace, ASTNode } from "@/context/WorkspaceContext";
 
 export default function GraphCanvas() {
+  const { nodes, setNodes, edges, activeFilters } = useWorkspace();
+
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>("node-auth-service");
   const [zoomLevel, setZoomLevel] = useState<number>(100);
   const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -25,20 +18,16 @@ export default function GraphCanvas() {
   const panStartRef = useRef<{ startPanX: number; startPanY: number; mouseStartX: number; mouseStartY: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
-  const [nodes, setNodes] = useState<ASTNode[]>([
-    { id: "node-api-gateway", title: "ApiGatewayController", type: "controller", x: 80, y: 100, complexity: 12, inEdges: [] },
-    { id: "node-auth-service", title: "AuthenticationService", type: "service", x: 400, y: 180, complexity: 28, inEdges: ["node-api-gateway"] },
-    { id: "node-user-model", title: "UserModelEntity", type: "model", x: 750, y: 120, complexity: 8, inEdges: ["node-auth-service"] },
-    { id: "node-payment-service", title: "BillingEngineService", type: "service", x: 420, y: 380, complexity: 42, inEdges: ["node-api-gateway"] },
-    { id: "node-ledger-model", title: "TransactionLedger", type: "model", x: 780, y: 400, complexity: 19, inEdges: ["node-payment-service"] },
-  ]);
+  // Derive visible subset based on active sidebar component filters
+  const visibleNodes = nodes.filter((n) => {
+    const pluralType = `${n.type}s`;
+    return activeFilters.includes(pluralType);
+  });
 
-  const edges = [
-    { source: "node-api-gateway", target: "node-auth-service" },
-    { source: "node-auth-service", target: "node-user-model" },
-    { source: "node-api-gateway", target: "node-payment-service" },
-    { source: "node-payment-service", target: "node-ledger-model" },
-  ];
+  // Only draw curves where both endpoints are actively rendered
+  const visibleEdges = edges.filter(
+    (e) => visibleNodes.some((n) => n.id === e.source) && visibleNodes.some((n) => n.id === e.target)
+  );
 
   // Triggers isolated card grab mechanics
   const handleNodeMouseDown = (node: ASTNode, e: React.MouseEvent) => {
@@ -119,8 +108,8 @@ export default function GraphCanvas() {
   };
 
   const getBezierPath = (sourceId: string, targetId: string) => {
-    const sNode = nodes.find((n) => n.id === sourceId);
-    const tNode = nodes.find((n) => n.id === targetId);
+    const sNode = visibleNodes.find((n) => n.id === sourceId);
+    const tNode = visibleNodes.find((n) => n.id === targetId);
     if (!sNode || !tNode) return "";
 
     const sX = sNode.x + 220;
@@ -179,9 +168,9 @@ export default function GraphCanvas() {
             pointerEvents: "none",
           }}
         >
-          {edges.map((edge, idx) => {
+          {visibleEdges.map((edge, idx) => {
             const impacted = isPathImpacted(edge.source, edge.target);
-            const sNode = nodes.find((n) => n.id === edge.source);
+            const sNode = visibleNodes.find((n) => n.id === edge.source);
             const isSourceActive = sNode?.id === selectedNodeId;
 
             return (
@@ -195,7 +184,7 @@ export default function GraphCanvas() {
         </svg>
 
         <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "auto" }}>
-          {nodes.map((node) => {
+          {visibleNodes.map((node) => {
             const isSelected = selectedNodeId === node.id;
             const isBeingDragged = draggedNodeId === node.id;
             const isImpacted = selectedNodeId && (node.inEdges.includes(selectedNodeId) || node.id === selectedNodeId);

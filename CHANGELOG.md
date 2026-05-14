@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-05-14
+
+### Added
+- Created global centralized `WorkspaceContext` React Provider encapsulating source-of-truth arrays for codebase files, edge matrices, active component type filters, and target scan dispatchers.
+- Developed backend Next.js local scanner endpoint (`/api/scan`) using native file-system traversal to recursively parse workspace source files.
+- Automated static module code complexity detection and dependency tracing by evaluating JS/TS syntax logic branches and dynamic `import` specifiers.
+- Hooked live workspace state arrays into `Header` metric counters and interactive sync action triggers.
+- Enabled instantaneous canvas layout updates by linking visible graph maps directly to real-time `Sidebar` component filter settings.
+
 ## [0.1.1] - 2026-05-14
 
 ### Fixed
@@ -32,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Central interactive `GraphCanvas` interface previewing mock workspace AST node components and hardware-accelerated SVG dependency flow links.
 - Interactive click-state blast radius logic highlighting upstream paths and downstream propagation paths.
 
+[0.2.0]: https://github.com/dhia/archlens/releases/tag/v0.2.0
 [0.1.1]: https://github.com/dhia/archlens/releases/tag/v0.1.1
 [0.1.0]: https://github.com/dhia/archlens/releases/tag/v0.1.0
 [0.0.1]: https://github.com/dhia/archlens/releases/tag/v0.0.1

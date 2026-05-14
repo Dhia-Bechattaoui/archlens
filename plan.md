@@ -28,12 +28,13 @@ archlens/
 - [x] Scaffold glassmorphic UI panels and structural interface shells (Header, Sidebar, GraphCanvas).
 - [x] Verify production build runs warning-free and optimized.
 
-### Phase 2: Graph Engine Integration
-- [ ] Integrate interactive node visualization canvas.
-- [ ] Implement real-time drag, zoom, and blast-radius simulation filters.
+### Phase 2: Graph Engine Integration [COMPLETED]
+- [x] Integrate interactive node visualization canvas supporting direct dynamic references.
+- [x] Implement real-time drag math, viewport matrix panning, and animated bezier blast-radius vectors.
 
 ### Phase 3: Parsing & Backend Synchronization
 - [ ] Build local AST/dependency mapping server to feed dynamic live repository models.
 
 ## 5. Implementation Log
 - **2026-05-14**: Verified working directory path (`archlens`), non-interactively generated foundation with Next.js App Router, configured rich visual aesthetics via `globals.css` base design tokens, assembled decoupled interactive canvas shell elements, pinned standard dependencies cleanly, and validated error-free compilation.
+- **2026-05-14 (Phase 2)**: Integrated fully reactive client-side Graph Engine inside `GraphCanvas.tsx`. Implemented live absolute coordinate mouse dragging updates, viewport matrix panning (`translate/scale`), automatic SVG cubic bezier path routing vectors, and direct localized blast-radius trace validation.

@@ -1,0 +1,198 @@
+.canvasWrapper {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  background-color: var(--bg-canvas);
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ambientLighting {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.05) 0%, transparent 70%);
+  top: 10%;
+  left: 20%;
+  pointer-events: none;
+}
+
+.ambientLightingSecondary {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(189, 0, 255, 0.04) 0%, transparent 70%);
+  bottom: 5%;
+  right: 10%;
+  pointer-events: none;
+}
+
+/* Interactive Canvas Shell & Demo Node Render Layout */
+.nodeShell {
+  position: absolute;
+  width: 220px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--bg-panel);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  cursor: grab;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.nodeShell:hover {
+  transform: translateY(-4px) scale(1.02);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.15);
+  z-index: 5;
+}
+
+.nodeShell.activeBlast {
+  border-color: var(--accent-rose);
+  box-shadow: 0 0 25px rgba(255, 0, 85, 0.3);
+  animation: pulseRisk 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulseRisk {
+  0%, 100% { box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); }
+  50% { box-shadow: 0 0 35px rgba(255, 0, 85, 0.5); }
+}
+
+.nodeShell.primaryService {
+  border-left: 4px solid var(--accent-cyan);
+}
+
+.nodeShell.controllerNode {
+  border-left: 4px solid var(--accent-purple);
+}
+
+.nodeShell.modelNode {
+  border-left: 4px solid var(--accent-emerald);
+}
+
+.nodeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nodeTitle {
+  font-family: var(--font-heading);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+
+.nodeMetrics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding-top: 8px;
+  justify-content: space-between;
+}
+
+.impactBadge {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 0, 85, 0.15);
+  color: var(--accent-rose);
+  font-weight: 700;
+}
+
+/* Connection Paths SVG Overlays */
+.connectionsOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.edgePath {
+  fill: none;
+  stroke: var(--glass-border);
+  stroke-width: 2;
+  transition: stroke 0.3s;
+}
+
+.edgePath.active {
+  stroke: var(--accent-cyan);
+  stroke-width: 2.5;
+  stroke-dasharray: 6;
+  animation: dashFlow 20s linear infinite;
+}
+
+.edgePath.blastImpact {
+  stroke: var(--accent-rose);
+  stroke-width: 3;
+  stroke-dasharray: 8;
+  animation: dashFlowRisk 15s linear infinite;
+}
+
+@keyframes dashFlow {
+  to { stroke-dashoffset: -1000; }
+}
+
+@keyframes dashFlowRisk {
+  to { stroke-dashoffset: -1000; }
+}
+
+/* Floating helper controls inside canvas */
+.canvasControls {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  background: rgba(6, 7, 10, 0.75);
+  padding: 6px;
+  border-radius: 100px;
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+}
+
+.iconBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.iconBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border);
+  transform: scale(1.05);
+}
